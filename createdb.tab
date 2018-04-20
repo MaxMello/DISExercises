@@ -1,0 +1,134 @@
+-- comment: db2 -svtf create.tab
+
+connect to VSISP user vsisp27;
+
+create table Address
+	(id int not null,
+	city varchar(20) not null,
+	postalCode tinyint not null,
+	street varchar(20) not null,
+	nr tinyint not null,
+	PRIMARY KEY (id));
+
+insert into Address values (1, "Hamburg", 22527, "Vogt-Kölln-Str", 30);
+insert into Address values (2, "Hamburg", 20148 , "Mittelweg", 177);
+insert into Address values (3, "Hamburg", 20354  , "Alsterterasse", 1);
+
+create table EstateAgent --id as primary key?
+	(name varchar(30) not null,
+	address int,
+	login varchar(20) not null,
+	password varchar(20) not null,
+	PRIMARY KEY(name), --sinnvoll?
+	constraint UC_EstateAgent unique (login, password),
+	FOREIGN key (address) REFERENCES Address(id));
+
+insert into EstateAgent values ("Hugo", 1, "login", "password");
+insert into EstateAgent values ("Gerda", 1, "gerda", "123456");
+
+create table Estate
+	(id int not null,
+	address int not null,
+	area int not null,
+	PRIMARY KEY (id),
+	FOREIGN key (address) REFERENCES Address(id));
+
+insert into Estate values (1, 2, 250);
+insert into Estate values (2, 3, 150);
+
+create table Apartment
+	(estate int not null,
+	floor tinyint,
+	rent int,
+	rooms tinyint,
+	balcony bit,
+	kitchen bit,
+	PRIMARY KEY (estate),
+	FOREIGN KEY (estate) REFERENCES Estate(id));
+
+insert into Apartment values (1, 3, 123, 4, 0, 0);
+
+create table House
+	(estate int not null,
+	floors tinyint,
+	price int,
+	garden bit,
+	PRIMARY KEY (estate),
+	FOREIGN KEY (estate) REFERENCES Estate(id));
+
+insert into House values (2, 4, 12345, 0);
+
+create table Person
+	(id int not null,
+	firstName varchar(20) not null,
+	name varchar(20) not null,
+	address int not null,
+	PRIMARY KEY (id),
+	FOREIGN KEY (address) REFERENCES Address(id));
+
+insert into Person values (1, "Gustav", "Gans", 1);
+insert into Person values (2, "Mickey", "Mouse", 1)
+
+create table Contract
+	(no int not null,
+	cDate date not null,
+	place varchar(20) not null,
+	PRIMARY KEY (no));
+
+insert into Contract values (1, "29-JUN-04", "Honululu");
+insert into Contract values (2, "01-JAN-16", "Berlin");
+
+create table TenancyContract
+	(contract int not null,
+	startDate date not null,
+	duration int,
+	addCosts int,
+	PRIMARY KEY (contract),
+	FOREIGN KEY (contract) REFERENCES Contract(no));
+
+insert into TenancyContract values (1, "01-SEP-04", 20, 100);
+
+create table PurchaseContract
+	(contract int not null,
+	nrInstallments int,
+	rate int,
+	PRIMARY KEY (contract),
+	FOREIGN KEY (contract) REFERENCES Contract(no));
+
+insert into PurchaseContract values (2, 24, 1234);
+
+create table manages
+	(estate int not null,
+	agent varchar(30) not null,
+	FOREIGN KEY (estate) REFERENCES Estate(id),
+	FOREIGN KEY (agent) REFERENCES EstateAgent(name),
+	PRIMARY KEY (estate);
+
+insert into manages values (1, "Hugo");
+insert into manages values (2, "Gerda");
+
+create table sells
+	(house int not null,
+	person int not null,
+	contract int not null,
+	FOREIGN KEY (house) REFERENCES House(estate),
+	FOREIGN KEY (person) REFERENCES Person(id),
+	FOREIGN KEY (contract) REFERENCES PurchaseContract(contract),
+	PRIMARY KEY (contract));
+
+insert into sells values(2, 2, 2);
+
+create table rents
+	(apartment int not null,
+	person int not null,
+	tenancyContract int not null,
+	FOREIGN KEY (apartment) REFERENCES Apartment(estate),
+	FOREIGN KEY (person) REFERENCES Person(id),
+	FOREIGN KEY (tenancyContract) REFERENCES TenancyContract(contract),
+	PRIMARY KEY (tenancyContract));
+
+insert into rents values(1, 1, 1);
+
+commit work;
+
+connect reset;
