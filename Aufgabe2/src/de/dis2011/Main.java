@@ -19,7 +19,7 @@ public class Main {
 	/**
 	 * Zeigt das Hauptmenü
 	 */
-	public static void showMainMenu() {
+	private static void showMainMenu() {
 		//Menüoptionen
 		final int MENU_MAKLER = 0;
 		final int QUIT = 1;
@@ -56,7 +56,7 @@ public class Main {
 	/**
 	 * Zeigt die Maklerverwaltung
 	 */
-	public static void showMaklerMenu() {
+	private static void showMaklerMenu() {
 		//Menüoptionen
 		final int NEW_MAKLER = 0;
 		final int BACK = 1;
@@ -98,7 +98,7 @@ public class Main {
 	 * Legt einen neuen Makler an, nachdem der Benutzer
 	 * die entprechenden Daten eingegeben hat.
 	 */
-	public static void newMakler() {
+	private static void newMakler() {
 		Makler m = new Makler();
 		
 		m.setName(FormUtil.readString("Name"));
@@ -114,7 +114,7 @@ public class Main {
      * Legt einen neuen Makler an, nachdem der Benutzer
      * die entprechenden Daten eingegeben hat.
      */
-    public static void changeMakler() {
+    private static void changeMakler() {
         System.out.println("Liste aller Makler: ");
         for(Makler makler : Makler.getAll()) {
             System.out.println("Makler ID=" + makler.getId() + ", Name=" + makler.getName());
@@ -140,7 +140,7 @@ public class Main {
      * Legt einen neuen Makler an, nachdem der Benutzer
      * die entprechenden Daten eingegeben hat.
      */
-    public static void deleteMakler() {
+    private static void deleteMakler() {
         System.out.println("Liste aller Makler: ");
         for(Makler makler : Makler.getAll()) {
             System.out.println("Makler ID= " + makler.getId() + ", Name=" + makler.getName());
@@ -157,7 +157,7 @@ public class Main {
         }
     }
 
-    public static void showEstateMenu() {
+    private static void showEstateMenu() {
         //Menüoptionen
         final int NEW_ESTATE = 0;
         final int BACK = 1;
@@ -198,7 +198,7 @@ public class Main {
         }
     }
 
-    public static void newEstate() {
+    private static void newEstate() {
         final String answer = FormUtil.readString("Was möchten Sie erstellen ('Haus'/'Apartment')");
         if("Haus".equalsIgnoreCase(answer)){
             final House house = new House();
@@ -227,7 +227,7 @@ public class Main {
      * Legt einen neuen Makler an, nachdem der Benutzer
      * die entprechenden Daten eingegeben hat.
      */
-    public static void changeEstate() {
+    private static void changeEstate() {
         final String answer = FormUtil.readString("Was möchten Sie bearbeiten ('Haus'/'Apartment')");
         if("Haus".equalsIgnoreCase(answer)){
             System.out.println("Liste aller Häuser: ");
@@ -279,7 +279,7 @@ public class Main {
      * Legt einen neuen Makler an, nachdem der Benutzer
      * die entprechenden Daten eingegeben hat.
      */
-    public static void deleteEstate() {
+    private static void deleteEstate() {
         System.out.println("Liste aller Apartments: ");
         for(Apartment apartment : Apartment.getAll()) {
             System.out.println("Apartment ID=" + apartment.getId() + ", Adresse=" + apartment.getAddress());
@@ -300,41 +300,57 @@ public class Main {
         }
     }
 
-    public static void showContractMenu() {
+    private static void showContractMenu() {
         //Menüoptionen
-        final int NEW_MAKLER = 0;
+        final int NEW_PERSON = 0;
         final int BACK = 1;
-        final int CHANGE_MAKLER = 2;
-        final int DELETE_MAKLER = 3;
+        final int SELL_HOUSE = 2;
+        final int RENT_APARTMENT = 3;
+        final int OVERVIEW = 4;
 
         //Maklerverwaltungsmenü
-        Menu maklerMenu = new Menu("Makler-Verwaltung");
-        maklerMenu.addEntry("Neuer Makler", NEW_MAKLER);
-        maklerMenu.addEntry("Makler bearbeiten", CHANGE_MAKLER);
-        maklerMenu.addEntry("Makler löschen", DELETE_MAKLER);
+        Menu maklerMenu = new Menu("Vertrags-Verwaltung");
+        maklerMenu.addEntry("Neuer Kunde", NEW_PERSON);
+        maklerMenu.addEntry("Haus verkaufen", SELL_HOUSE);
+        maklerMenu.addEntry("Apartment vermieten", RENT_APARTMENT);
+        maklerMenu.addEntry("Vertags-Übersicht", OVERVIEW);
         maklerMenu.addEntry("Zurück zum Hauptmenü", BACK);
 
-        if("geheim".equals(FormUtil.readString("Bitte Passwort eingeben"))) {
-            //Verarbeite Eingabe
-            while (true) {
-                int response = maklerMenu.show();
-
-                switch (response) {
-                    case NEW_MAKLER:
-                        newMakler();
-                        break;
-                    case CHANGE_MAKLER:
-                        changeMakler();
-                        break;
-                    case DELETE_MAKLER:
-                        deleteMakler();
-                        break;
-                    case BACK:
-                        return;
-                }
+        //Verarbeite Eingabe
+        while (true) {
+            int response = maklerMenu.show();
+            switch (response) {
+                case NEW_PERSON:
+                    newPerson();
+                    break;
+                case SELL_HOUSE:
+                    sellHouse();
+                    break;
+                case RENT_APARTMENT:
+                    rentApartment();
+                    break;
+                case OVERVIEW:
+                    contractOverview();
+                    break;
+                case BACK:
+                    return;
             }
-        } else {
-            System.out.println("Falsches Passwort");
         }
+    }
+
+    private static void newPerson() {
+
+    }
+
+    private static void sellHouse() {
+
+    }
+
+    private static void rentApartment() {
+
+    }
+
+    private static void contractOverview() {
+
     }
 }
