@@ -32,10 +32,7 @@ public class DB2ConnectionManager {
 		try {
 			// Holen der Einstellungen aus der db2.properties Datei
 			Properties properties = new Properties();
-			URL url = ClassLoader.getSystemResource("db2.properties");
-			FileInputStream stream = new FileInputStream(new File(url.toURI()));
-			properties.load(stream);
-			stream.close();
+			properties.load(this.getClass().getResourceAsStream("db2.properties"));
 
 			String jdbcUser = properties.getProperty("jdbc_user");
 			String jdbcPass = properties.getProperty("jdbc_pass");
@@ -53,10 +50,7 @@ public class DB2ConnectionManager {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
 		}
-
 	}
 
 	/**

@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+import java.util.ArrayList;
 
 import de.dis2011.data.DB2ConnectionManager;
 
@@ -76,7 +78,7 @@ public class Makler {
 			Connection con = DB2ConnectionManager.getInstance().getConnection();
 
 			// Erzeuge Anfrage
-			String selectSQL = "SELECT * FROM makler WHERE id = ?";
+			String selectSQL = "SELECT * FROM estateagent WHERE id = ?";
 			PreparedStatement pstmt = con.prepareStatement(selectSQL);
 			pstmt.setInt(1, id);
 
@@ -113,7 +115,7 @@ public class Makler {
 			if (getId() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
 				// damit spC$ter generierte IDs zurC<ckgeliefert werden!
-				String insertSQL = "INSERT INTO makler(name, address, login, password) VALUES (?, ?, ?, ?)";
+				String insertSQL = "INSERT INTO estateagent(name, address, login, password) VALUES (?, ?, ?, ?)";
 
 				PreparedStatement pstmt = con.prepareStatement(insertSQL,
 						Statement.RETURN_GENERATED_KEYS);
@@ -135,7 +137,7 @@ public class Makler {
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE makler SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
+				String updateSQL = "UPDATE estateagent SET name = ?, address = ?, login = ?, password = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -151,5 +153,84 @@ public class Makler {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static List<Makler> getAll() {
+		try {
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT * FROM estateagent";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+
+			// Führe Anfrage aus
+			ResultSet rs = pstmt.executeQuery();
+			List<Makler> agents = new ArrayList<Makler>();
+			while (rs.next()) {
+				Makler ts = new Makler();
+				ts.setId(rs.getInt("id"));
+				ts.setName(rs.getString("name"));
+				ts.setAddress(rs.getString("address"));
+				ts.setLogin(rs.getString("login"));
+				ts.setPassword(rs.getString("password"));
+				agents.add(ts);
+			}
+			rs.close();
+			pstmt.close();
+			return agents;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<Makler>();
+	}
+
+	public static boolean delete(int id) {
+		try {
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT * FROM estateagent WHERE id = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				selectSQL = "DELETE FROM estateagent WHERE id = ?";
+				pstmt = con.prepareStatement(selectSQL);
+				pstmt.setInt(1, id);
+				pstmt.executeUpdate();
+				rs.close();
+				pstmt.close();
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public static boolean login(final String username, final String password) {
+		try {
+			// Hole Verbindung
+			Connection con = DB2ConnectionManager.getInstance().getConnection();
+
+			// Erzeuge Anfrage
+			String selectSQL = "SELECT * FROM estateagent WHERE login = ? and password = ?";
+			PreparedStatement pstmt = con.prepareStatement(selectSQL);
+			pstmt.setString(1, username);
+			pstmt.setString(2, password);
+
+			// Führe Anfrage aus
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+			rs.close();
+			pstmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

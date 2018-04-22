@@ -6,6 +6,8 @@
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="dist" location="dist"/>
+    <property name="lib" location="lib"/>
+
 
     <target name="init">
         <!-- Create the time stamp -->
@@ -25,8 +27,16 @@
         <!-- Create the distribution directory -->
         <mkdir dir="${dist}/app"/>
 
+        <copy todir="${build}">
+            <fileset dir="${src}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
         <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
         <jar jarfile="${dist}/app/DISAufgabe2.jar" basedir="${build}">
+            <zipgroupfileset dir="${lib}" includes="db2jcc.jar" />
+            <zipgroupfileset dir="${lib}" includes="db2jcc_license_cu.jar" />
             <manifest>
                 <attribute name="Main-Class" value="de.dis2011.Main"/>
             </manifest>
