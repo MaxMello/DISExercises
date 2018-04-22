@@ -2,39 +2,23 @@
 
 -- connect to VSISP user vsisp27;
 
-create table Address
-(id int not null,
- city varchar(20) not null,
- postalCode int not null,
- street varchar(20) not null,
- nr int not null,
-  PRIMARY KEY (id));
+create table EstateAgent
+(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
+ name varchar(30) not null,
+ address varchar(255),
+ login varchar(20) not null unique,
+ password varchar(20) not null);
 
-insert into Address values (1, 'Hamburg', 22527, 'Vogt-Kölln-Str', 30);
-insert into Address values (2, 'Hamburg', 20148 , 'Mittelweg', 177);
-insert into Address values (3, 'Hamburg', 20354  , 'Alsterterasse', 1);
-
-create table EstateAgent --id as primary key?
-(name varchar(30) not null,
- address int,
- login varchar(20) not null,
- password varchar(20) not null,
-  PRIMARY KEY(name), --sinnvoll?
-  constraint UC_EstateAgent unique (login, password),
-  FOREIGN key (address) REFERENCES Address(id));
-
-insert into EstateAgent values ('Hugo', 1, 'login', 'password');
-insert into EstateAgent values ('Gerda', 1, 'gerda', '123456');
+insert into EstateAgent (name, address, login, password) values ('Hugo', 1, 'login', 'password');
+insert into EstateAgent (name, address, login, password) values ('Gerda', 1, 'gerda', '123456');
 
 create table Estate
-(id int not null,
- address int not null,
- area int not null,
-  PRIMARY KEY (id),
-  FOREIGN key (address) REFERENCES Address(id));
+(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
+ address VARCHAR(255),
+ area int not null);
 
-insert into Estate values (1, 2, 250);
-insert into Estate values (2, 3, 150);
+insert into Estate (address, area) values ('Spitalerstr. 5', 250);
+insert into Estate (address, area) values ('Lange Reihe 23', 150);
 
 create table Apartment
 (estate int not null,
@@ -59,15 +43,13 @@ create table House
 insert into House values (2, 4, 12345, 0);
 
 create table Person
-(id int not null,
+(id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
  firstName varchar(20) not null,
  name varchar(20) not null,
- address int not null,
-  PRIMARY KEY (id),
-  FOREIGN KEY (address) REFERENCES Address(id));
+ address VARCHAR(255));
 
-insert into Person values (1, 'Gustav', 'Gans', 1);
-insert into Person values (2, 'Mickey', 'Mouse', 1);
+insert into Person (firstName, name, address) values ('Gustav', 'Gans', 'Entenhausenstr. 33');
+insert into Person (firstName, name, address) values ('Mickey', 'Mouse', 'Kellinghusenstr. 4');
 
 create table Contract
 (no int not null,
@@ -99,13 +81,13 @@ insert into PurchaseContract values (2, 24, 1234);
 
 create table manages
 (estate int not null,
- agent varchar(30) not null,
+ agent int not null,
   FOREIGN KEY (estate) REFERENCES Estate(id),
-  FOREIGN KEY (agent) REFERENCES EstateAgent(name),
+  FOREIGN KEY (agent) REFERENCES EstateAgent(id),
   PRIMARY KEY (estate));
 
-insert into manages values (1, 'Hugo');
-insert into manages values (2, 'Gerda');
+insert into manages values (1, 1);
+insert into manages values (2, 2);
 
 create table sells
 (house int not null,
