@@ -1,9 +1,12 @@
 package de.dis2011;
 
-import de.dis2011.data.Apartment;
-import de.dis2011.data.Estate;
-import de.dis2011.data.House;
-import de.dis2011.data.Makler;
+import de.dis2011.data.*;
+
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hauptklasse
@@ -30,7 +33,7 @@ public class Main {
 		Menu mainMenu = new Menu("Hauptmenü");
 		mainMenu.addEntry("Makler-Verwaltung", MENU_MAKLER);
         mainMenu.addEntry("Estate-Verwaltung", MENU_ESTATE);
-        mainMenu.addEntry("Vertrags-Verwaltung", MENU_ESTATE);
+        mainMenu.addEntry("Vertrags-Verwaltung", MENU_CONTRACT);
         mainMenu.addEntry("Beenden", QUIT);
 		
 		//Verarbeite Eingabe
@@ -339,18 +342,93 @@ public class Main {
     }
 
     private static void newPerson() {
+        Person person = new Person();
+        person.setFirstname(FormUtil.readString("Vorname"));
+        person.setName(FormUtil.readString("Nachname"));
+        person.setAddress(FormUtil.readString("Adresse"));
+        person.save();
+        System.out.println("Person gespeichert");
 
     }
 
     private static void sellHouse() {
+        System.out.println("Welche Person will ein Haus kaufen?");
+        Person.getAll().forEach(it -> System.out.println(it.toString()));
+        int personID = FormUtil.readInt("ID des Käufers");
+        Person person = Person.load(personID);
+        if(person != null) {
+            System.out.println("Welches Haus soll gekauft werden?");
+            House.getAll().forEach(it -> System.out.println(it.toString()));
+            int houseID = FormUtil.readInt("ID des Hauses");
+            House house = House.load(houseID);
+            if(house != null) {
+                PurchaseContract contract = new PurchaseContract();
+                contract.setPlace(FormUtil.readString("Ort der Unterschrift"));
+                contract.setcDate(new Date(System.currentTimeMillis()));
+                contract.setRate(FormUtil.readInt("Rate"));
+                contract.setNumberOfInstallments(FormUtil.readInt("Anzahl Zahlungen"));
+                contract.save();
 
+                Sell sell = new Sell();
+                sell.setHouseID(houseID);
+                sell.setPersonID(personID);
+                sell.setPurchaseContractNo(contract.getNo());
+                sell.save();
+                System.out.println("Vertrag erfolgreich gespeichert");
+            } else {
+                System.out.println("Haus existiert nicht");
+            }
+        } else {
+            System.out.println("Person existiert nicht");
+        }
     }
 
     private static void rentApartment() {
+        System.out.println("Welche Person will ein Apartment mieten?");
+        Person.getAll().forEach(it -> System.out.println(it.toString()));
+        int personID = FormUtil.readInt("ID des Mieters");
+        Person person = Person.load(personID);
+        if(person != null) {
+            System.out.println("Welches Apartment soll gemietet werden?");
+            Apartment.getAll().forEach(it -> System.out.println(it.toString()));
+            int apartmentID = FormUtil.readInt("ID des Apartments");
+            Apartment apartment = Apartment.load(apartmentID);
+            if(apartment != null) {
+                TenancyContract contract = new TenancyContract();
+                contract.setPlace(FormUtil.readString("Ort der Unterschrift"));
+                contract.setcDate(new Date(System.currentTimeMillis()));
+                try {
+                    contract.setStartDate(new Date(new SimpleDateFormat("dd.MM.YYYY").parse(FormUtil.readString("Startdatum")).getTime()));
+                } catch (ParseException e) {
+                    // e.printStackTrace();
+                    System.out.println("Invalid date, set date to today");
+                    contract.setStartDate(new Date(System.currentTimeMillis()));
+                }
+                contract.setDuration(FormUtil.readInt("Dauer in Tagen"));
+                contract.setAdditionalCosts(FormUtil.readInt("Zusatzkosten"));
+                contract.save();
 
+                Rent rent = new Rent();
+                rent.setApartmentID(apartmentID);
+                rent.setPersonID(personID);
+                rent.setTenancyContractNo(contract.getNo());
+                rent.save();
+                System.out.println("Vertrag erfolgreich gespeichert");
+            } else {
+                System.out.println("Aparment existiert nicht");
+            }
+        } else {
+            System.out.println("Person existiert nicht");
+        }
     }
 
     private static void contractOverview() {
+        List<Contract> contractList = new ArrayList<>();
+        contractList.addAll(TenancyContract.getAll());
+        contractList.addAll(PurchaseContract.getAll());
+        contractList.forEach( it ->
+                System.out.println(it.toString())
+        );
 
     }
 }

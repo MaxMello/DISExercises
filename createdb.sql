@@ -52,13 +52,12 @@ insert into Person (firstName, name, address) values ('Gustav', 'Gans', 'Entenha
 insert into Person (firstName, name, address) values ('Mickey', 'Mouse', 'Kellinghusenstr. 4');
 
 create table Contract
-(no int not null,
+(no int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1, NO CACHE) PRIMARY KEY,
  cDate date not null,
- place varchar(20) not null,
-  PRIMARY KEY (no));
+ place varchar(20) not null);
 
-insert into Contract values (1, '2004-06-04', 'Honululu');
-insert into Contract values (2, '2016-01-01', 'Berlin');
+insert into Contract (cDate, place) values ('2004-06-04', 'Honululu');
+insert into Contract (cDate, place) values ('2016-01-01', 'Berlin');
 
 create table TenancyContract
 (contract int not null,

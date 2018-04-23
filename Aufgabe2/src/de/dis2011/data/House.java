@@ -160,4 +160,9 @@ public class House extends Estate {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Haus Nr. " + getId() + ", Adresse: " + getAddress();
+    }
 }

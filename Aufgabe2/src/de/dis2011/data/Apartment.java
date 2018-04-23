@@ -193,4 +193,9 @@ public class Apartment extends Estate {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "Apartment Nr. " + getId() + ", Adresse: " + getAddress();
+    }
 }
