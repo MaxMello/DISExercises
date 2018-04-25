@@ -91,7 +91,6 @@ public class TenancyContract extends Contract {
                 if (rs.next()) {
                     setNo(rs.getInt(1));
                 }
-                System.out.println("TEST::: Generated contract");
 
                 insertSQL = "INSERT INTO tenancycontract(contract, startdate, duration, addcosts) VALUES (?, ?, ?, ?)";
 
