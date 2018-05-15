@@ -1,21 +1,19 @@
 package de.dis2018.core;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import de.dis2018.data.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.NoResultException;
+
 /**
  *  Class for managing all database entities.
  */
 public class EstateService {
 	//TODO All these sets should be commented out after successful implementation.
-	private Set<EstateAgent> estateAgents = new HashSet<EstateAgent>();
 	private Set<Person> persons = new HashSet<Person>();
 	private Set<House> houses = new HashSet<House>();
 	private Set<Apartment> apartments = new HashSet<Apartment>();
@@ -44,16 +42,10 @@ public class EstateService {
 	 * @return Agent with ID or null
 	 */
 	public EstateAgent getEstateAgentByID(int id) {
-		Iterator<EstateAgent> it = estateAgents.iterator();
-		
-		while(it.hasNext()) {
-			EstateAgent m = it.next();
-			
-			if(m.getId() == id)
-				return m;
-		}
-		
-		return null;
+        Session session = sessionFactory.openSession();
+        EstateAgent agent = session.get(EstateAgent.class, id);
+		session.close();
+		return agent;
 	}
 	
 	/**
@@ -62,23 +54,27 @@ public class EstateService {
 	 * @return Estate agent with the given ID or null
 	 */
 	public EstateAgent getEstateAgentByLogin(String login) {
-		Iterator<EstateAgent> it = estateAgents.iterator();
-		
-		while(it.hasNext()) {
-			EstateAgent m = it.next();
-			
-			if(m.getLogin().equals(login))
-				return m;
-		}
-		
-		return null;
+        try (Session session = sessionFactory.openSession()) {
+            return session.createQuery("from EstateAgent where login = :login", EstateAgent.class)
+                    .setParameter("login", login)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return null;
 	}
 	
 	/**
 	 * Returns all estateAgents
 	 */
 	public Set<EstateAgent> getAllEstateAgents() {
-		return estateAgents;
+        try (Session session = sessionFactory.openSession()) {
+            return new HashSet<>(session.createQuery("from EstateAgent", EstateAgent.class)
+                    .getResultList());
+        } catch (NoResultException e) {
+            e.printStackTrace();
+        }
+        return new HashSet<>();
 	}
 	
 	/**
@@ -104,7 +100,9 @@ public class EstateService {
 	 * @param ea The estate agent
 	 */
 	public void addEstateAgent(EstateAgent ea) {
-		estateAgents.add(ea);
+        Session session = sessionFactory.openSession();
+        session.save(ea);
+        session.close();
 	}
 	
 	/**
@@ -112,7 +110,9 @@ public class EstateService {
 	 * @param ea The estate agent
 	 */
 	public void deleteEstateAgent(EstateAgent ea) {
-		estateAgents.remove(ea);
+        Session session = sessionFactory.openSession();
+        session.delete(ea);
+        session.close();
 	}
 	
 	/**
