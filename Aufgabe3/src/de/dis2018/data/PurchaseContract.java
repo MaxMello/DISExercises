@@ -19,7 +19,7 @@ public class PurchaseContract extends Contract {
 	private int intrestRate;
 
 	@ManyToOne
-	@JoinColumn(name = "houseID", unique = true, insertable = false, updatable = false)
+	@JoinColumn(name = "houseID", unique = true)
 	private House house;
 	
 	public PurchaseContract() {

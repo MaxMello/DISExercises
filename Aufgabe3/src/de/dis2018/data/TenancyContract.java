@@ -24,7 +24,7 @@ public class TenancyContract extends Contract {
 	private int additionalCosts;
 
     @ManyToOne
-    @JoinColumn(name = "apartmentID", unique = true, insertable = false, updatable = false)
+    @JoinColumn(name = "apartmentID", unique = true)
 	private Apartment apartment;
 
 	public TenancyContract() {

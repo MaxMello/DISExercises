@@ -1,25 +1,18 @@
 package de.dis2018.core;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import de.dis2018.data.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.NoResultException;
-
 /**
  *  Class for managing all database entities.
  */
 public class EstateService {
-	//TODO All these sets should be commented out after successful implementation.
-	private Set<Person> persons = new HashSet<Person>();
-	private Set<House> houses = new HashSet<House>();
-	private Set<Apartment> apartments = new HashSet<Apartment>();
-	private Set<TenancyContract> tenancyContracts = new HashSet<TenancyContract>();
-	private Set<PurchaseContract> purchaseContracts = new HashSet<PurchaseContract>();
-	
 	//Hibernate Session
 	private SessionFactory sessionFactory;
 	
@@ -42,10 +35,7 @@ public class EstateService {
 	 * @return Agent with ID or null
 	 */
 	public EstateAgent getEstateAgentByID(int id) {
-        Session session = sessionFactory.openSession();
-        EstateAgent agent = session.get(EstateAgent.class, id);
-		session.close();
-		return agent;
+        return readFromDB(s -> s.get(EstateAgent.class, id));
 	}
 	
 	/**
@@ -54,27 +44,17 @@ public class EstateService {
 	 * @return Estate agent with the given ID or null
 	 */
 	public EstateAgent getEstateAgentByLogin(String login) {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("from EstateAgent where login = :login", EstateAgent.class)
-                    .setParameter("login", login)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return readFromDB(s -> s.createQuery("from EstateAgent where login = :login", EstateAgent.class)
+                .setParameter("login", login)
+                .getSingleResult());
 	}
 	
 	/**
 	 * Returns all estateAgents
 	 */
 	public Set<EstateAgent> getAllEstateAgents() {
-        try (Session session = sessionFactory.openSession()) {
-            return new HashSet<>(session.createQuery("from EstateAgent", EstateAgent.class)
-                    .getResultList());
-        } catch (NoResultException e) {
-            e.printStackTrace();
-        }
-        return new HashSet<>();
+        return readFromDB(s -> new HashSet<>(s.createQuery("from EstateAgent", EstateAgent.class)
+                .getResultList()));
 	}
 	
 	/**
@@ -83,67 +63,55 @@ public class EstateService {
 	 * @return Person with ID or null
 	 */
 	public Person getPersonById(int id) {
-		Iterator<Person> it = persons.iterator();
-		
-		while(it.hasNext()) {
-			Person p = it.next();
-			
-			if(p.getId() == id)
-				return p;
-		}
-		
-		return null;
+        return readFromDB(s -> s.get(Person.class, id));
 	}
 	
 	/**
 	 * Adds an estate agent
 	 * @param ea The estate agent
 	 */
-	public void addEstateAgent(EstateAgent ea) {
-        Session session = sessionFactory.openSession();
-        session.save(ea);
-        session.close();
+	public void addEstateAgent(final EstateAgent ea) {
+        writeToDB(s -> s.saveOrUpdate(ea));
 	}
 	
 	/**
 	 * Deletes an estate agent
 	 * @param ea The estate agent
 	 */
-	public void deleteEstateAgent(EstateAgent ea) {
-        Session session = sessionFactory.openSession();
-        session.delete(ea);
-        session.close();
+	public void deleteEstateAgent(final EstateAgent ea) {
+        writeToDB(s -> s.delete(ea));
 	}
 	
 	/**
 	 * Adds a person
 	 * @param p The person
 	 */
-	public void addPerson(Person p) {
-		persons.add(p);
+	public void addPerson(final Person p) {
+        writeToDB((s -> s.saveOrUpdate(p)));
 	}
-	
+
 	/**
 	 * Returns all persons
 	 */
 	public Set<Person> getAllPersons() {
-		return persons;
+	    return readFromDB(s -> new HashSet<>(s.createQuery("from Person", Person.class)
+                .getResultList()));
 	}
 	
 	/**
 	 * Deletes a person
 	 * @param p The person
 	 */
-	public void deletePerson(Person p) {
-		persons.remove(p);
+	public void deletePerson(final Person p) {
+        writeToDB(s -> s.delete(p));
 	}
 	
 	/**
 	 * Adds a house
 	 * @param h The house
 	 */
-	public void addHouse(House h) {
-		houses.add(h);
+	public void addHouse(final House h) {
+		writeToDB(s -> s.saveOrUpdate(h));
 	}
 	
 	/**
@@ -152,17 +120,9 @@ public class EstateService {
 	 * @return All houses managed by the estate agent
 	 */
 	public Set<House> getAllHousesForEstateAgent(EstateAgent ea) {
-		Set<House> ret = new HashSet<House>();
-		Iterator<House> it = houses.iterator();
-		
-		while(it.hasNext()) {
-			House h = it.next();
-			
-			if(h.getManager().equals(ea))
-				ret.add(h);
-		}
-		
-		return ret;
+	    return readFromDB(s -> new HashSet<>(s.createQuery("from House where managerID = :managerID", House.class)
+                .setParameter("managerID", ea.getId())
+                .getResultList()));
 	}
 	
 	/**
@@ -171,32 +131,23 @@ public class EstateService {
 	 * @return The house or null if not found
 	 */
 	public House getHouseById(int id) {
-		Iterator<House> it = houses.iterator();
-		
-		while(it.hasNext()) {
-			House h = it.next();
-			
-			if(h.getId() == id)
-				return h;
-		}
-		
-		return null;
+        return readFromDB(s -> s.get(House.class, id));
 	}
 	
 	/**
 	 * Deletes a house
 	 * @param h The house
 	 */
-	public void deleteHouse(House h) {
-		houses.remove(h);
+	public void deleteHouse(final House h) {
+        writeToDB(s -> s.delete(h));
 	}
 	
 	/**
 	 * Adds an apartment
 	 * @param w the aparment
 	 */
-	public void addApartment(Apartment w) {
-		apartments.add(w);
+	public void addApartment(final Apartment w) {
+		writeToDB(s -> s.saveOrUpdate(w));
 	}
 	
 	/**
@@ -205,17 +156,9 @@ public class EstateService {
 	 * @return All apartments managed by the estate agent
 	 */
 	public Set<Apartment> getAllApartmentsForEstateAgent(EstateAgent ea) {
-		Set<Apartment> ret = new HashSet<Apartment>();
-		Iterator<Apartment> it = apartments.iterator();
-		
-		while(it.hasNext()) {
-			Apartment w = it.next();
-			
-			if(w.getManager().equals(ea))
-				ret.add(w);
-		}
-		
-		return ret;
+        return readFromDB(s -> new HashSet<>(s.createQuery("from Apartment where managerID = :managerID", Apartment.class)
+                .setParameter("managerID", ea.getId())
+                .getResultList()));
 	}
 	
 	/**
@@ -223,25 +166,16 @@ public class EstateService {
 	 * @param id The ID
 	 * @return The apartment or zero, if not found
 	 */
-	public Apartment getApartmentByID(int id) {
-		Iterator<Apartment> it = apartments.iterator();
-		
-		while(it.hasNext()) {
-			Apartment w = it.next();
-			
-			if(w.getId() == id)
-				return w;
-		}
-		
-		return null;
+	public Apartment getApartmentByID(final int id) {
+		return readFromDB(s -> s.get(Apartment.class, id));
 	}
 	
 	/**
 	 * Deletes an apartment
 	 * @param p The apartment
 	 */
-	public void deleteApartment(Apartment w) {
-		apartments.remove(w);
+	public void deleteApartment(final Apartment w) {
+		writeToDB(s -> s.delete(w));
 	}
 	
 	
@@ -249,16 +183,16 @@ public class EstateService {
 	 * Adds a tenancy contract
 	 * @param t The tenancy contract
 	 */
-	public void addTenancyContract(TenancyContract t) {
-		tenancyContracts.add(t);
+	public void addTenancyContract(final TenancyContract t) {
+		writeToDB(s -> s.saveOrUpdate(t));
 	}
 	
 	/**
 	 * Adds a purchase contract
 	 * @param p The purchase contract
 	 */
-	public void addPurchaseContract(PurchaseContract p) {
-		purchaseContracts.add(p);
+	public void addPurchaseContract(final PurchaseContract p) {
+		writeToDB(s -> s.saveOrUpdate(p));
 	}
 	
 	/**
@@ -267,16 +201,7 @@ public class EstateService {
 	 * @return The tenancy contract or zero if not found
 	 */
 	public TenancyContract getTenancyContractByID(int id) {
-		Iterator<TenancyContract> it = tenancyContracts.iterator();
-		
-		while(it.hasNext()) {
-			TenancyContract m = it.next();
-			
-			if(m.getId() == id)
-				return m;
-		}
-		
-		return null;
+        return readFromDB(s -> s.get(TenancyContract.class, id));
 	}
 	
 	/**
@@ -285,16 +210,7 @@ public class EstateService {
 	 * @return The purchase contract or null if not found
 	 */
 	public PurchaseContract getPurchaseContractById(int id) {
-		Iterator<PurchaseContract> it = purchaseContracts.iterator();
-		
-		while(it.hasNext()) {
-			PurchaseContract k = it.next();
-			
-			if(k.getId() == id)
-				return k;
-		}
-		
-		return null;
+        return readFromDB(s -> s.get(PurchaseContract.class, id));
 	}
 	
 	/**
@@ -303,17 +219,9 @@ public class EstateService {
 	 * @return All contracts belonging to apartments managed by the estate agent
 	 */
 	public Set<TenancyContract> getAllTenancyContractsForEstateAgent(EstateAgent ea) {
-		Set<TenancyContract> ret = new HashSet<TenancyContract>();
-		Iterator<TenancyContract> it = tenancyContracts.iterator();
-		
-		while(it.hasNext()) {
-			TenancyContract v = it.next();
-			
-			if(v.getApartment().getManager().equals(ea))
-				ret.add(v);
-		}
-		
-		return ret;
+        return readFromDB(s -> new HashSet<>(s.createQuery("from TenancyContract where apartment.manager.id = :managerID", TenancyContract.class)
+                .setParameter("managerID", ea.getId())
+                .getResultList()));
 	}
 	
 	/**
@@ -322,73 +230,11 @@ public class EstateService {
 	 * @return All purchase contracts belonging to houses managed by the given estate agent
 	 */
 	public Set<PurchaseContract> getAllPurchaseContractsForEstateAgent(EstateAgent ea) {
-		Set<PurchaseContract> ret = new HashSet<PurchaseContract>();
-		Iterator<PurchaseContract> it = purchaseContracts.iterator();
-		
-		while(it.hasNext()) {
-			PurchaseContract k = it.next();
-			
-			if(k.getHouse().getManager().equals(ea))
-				ret.add(k);
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Finds all tenancy contracts relating to the apartments of a given estate agent	 
-	 * @param ea The estate agent
-	 * @return set of tenancy contracts
-	 */
-	public Set<TenancyContract> getTenancyContractByEstateAgent(EstateAgent ea) {
-		Set<TenancyContract> ret = new HashSet<TenancyContract>();
-		Iterator<TenancyContract> it = tenancyContracts.iterator();
-		
-		while(it.hasNext()) {
-			TenancyContract mv = it.next();
-			
-			if(mv.getApartment().getManager().getId() == ea.getId())
-				ret.add(mv);
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Finds all purchase contracts relating to the houses of a given estate agent
-	 * @param  ea The estate agent
-	 * @return set of purchase contracts
-	 */
-	public Set<PurchaseContract> getPurchaseContractByEstateAgent(EstateAgent ea) {
-		Set<PurchaseContract> ret = new HashSet<PurchaseContract>();
-		Iterator<PurchaseContract> it = purchaseContracts.iterator();
-		
-		while(it.hasNext()) {
-			PurchaseContract k = it.next();
-			
-			if(k.getHouse().getManager().getId() == ea.getId())
-				ret.add(k);
-		}
-		
-		return ret;
+        return readFromDB(s -> new HashSet<>(s.createQuery("from PurchaseContract where house.manager.id = :managerID", PurchaseContract.class)
+                .setParameter("managerID", ea.getId())
+                .getResultList()));
 	}
 
-	
-	/**
-	 * Deletes a tenancy contract
-	 * @param tc the tenancy contract
-	 */
-	public void deleteTenancyContract(TenancyContract tc) {
-		apartments.remove(tc);
-	}
-	
-	/**
-	 * Deletes a purchase contract
-	 * @param tc the purchase contract
-	 */
-	public void deletePurchaseContract(PurchaseContract pc) {
-		apartments.remove(pc);
-	}
 	
 	/**
 	 * Adds some test data
@@ -513,4 +359,25 @@ public class EstateService {
         session.getTransaction().commit();
         session.close();
     }
+
+    private void writeToDB(Consumer<Session> consumer) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            consumer.accept(session);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private <T> T readFromDB(Function<Session, T> f) {
+        try (Session session = sessionFactory.openSession()) {
+            return f.apply(session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 }

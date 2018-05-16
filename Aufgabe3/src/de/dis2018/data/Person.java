@@ -3,6 +3,7 @@ package de.dis2018.data;
 import de.dis2018.util.Helper;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Person-Bean
@@ -24,6 +25,9 @@ public class Person {
 
 	@Column(name = "address")
 	private String address;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "contractPartner")
+    private Set<Contract> contracts;
 	
 	public Person() {
 	}

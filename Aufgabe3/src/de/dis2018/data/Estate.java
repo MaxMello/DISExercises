@@ -33,7 +33,7 @@ public abstract class Estate {
     private int squareArea;
 
     @ManyToOne
-    @JoinColumn(name = "managerID", insertable = false, updatable = false)
+    @JoinColumn(name = "managerID", nullable = false)
 	private EstateAgent manager;
 
 	public Estate() {

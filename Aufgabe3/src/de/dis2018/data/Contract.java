@@ -28,8 +28,9 @@ public abstract class Contract {
 	@Column(name = "place")
 	private String place;
 
-	@OneToOne
-	Person contractPartner;
+	@ManyToOne(cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "contractPartnerID", nullable = false)
+	private Person contractPartner;
 	
 	public Contract() {
 
