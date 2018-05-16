@@ -1,10 +1,9 @@
 package de.dis2018.data;
 
-import java.util.Set;
-
 import de.dis2018.util.Helper;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * Estate Agent-Bean
@@ -24,7 +23,7 @@ public class EstateAgent {
 	@Column(name = "address")
 	private String address;
 
-	@Column(name = "login")
+	@Column(name = "login", unique = true)
 	private String login;
 
 	@Column(name = "password")

@@ -2,10 +2,8 @@ package de.dis2018.data;
 
 import de.dis2018.util.Helper;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * House-Bean
@@ -23,6 +21,9 @@ public class House extends Estate {
 
 	@Column(name = "garden")
 	private boolean garden;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "house")
+    private List<PurchaseContract> contracts;
 	
 	public House() {
 		super();

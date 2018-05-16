@@ -3,10 +3,10 @@ package de.dis2018;
 import de.dis2018.authentication.EstateAgentAuthenticator;
 import de.dis2018.authentication.PropertiesFileAuthenticator;
 import de.dis2018.core.EstateService;
-import de.dis2018.editor.EstateEditor;
-import de.dis2018.editor.EstateAgentEditor;
-import de.dis2018.editor.PersonEditor;
 import de.dis2018.editor.ContractEditor;
+import de.dis2018.editor.EstateAgentEditor;
+import de.dis2018.editor.EstateEditor;
+import de.dis2018.editor.PersonEditor;
 import de.dis2018.menu.Menu;
 
 /**
@@ -47,7 +47,7 @@ public class Main {
 		EstateAgentAuthenticator ma = new EstateAgentAuthenticator(service);
 		
 		//Test data
-		service.addTestData();
+		// service.addTestData();
 		
 		//Processed input
 		while(true) {

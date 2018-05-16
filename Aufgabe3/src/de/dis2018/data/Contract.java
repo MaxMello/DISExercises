@@ -1,10 +1,9 @@
 package de.dis2018.data;
 
-import java.util.Date;
-
 import de.dis2018.util.Helper;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Contract-Bean
@@ -19,7 +18,7 @@ public abstract class Contract {
 	@Column(name = "id")
 	private int id;
 
-	@Column(name = "contractNo")
+	@Column(name = "contractNo", unique = true)
 	private int contractNo;
 
 	@Column(name = "date")
@@ -28,7 +27,7 @@ public abstract class Contract {
 	@Column(name = "place")
 	private String place;
 
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(name = "contractPartnerID", nullable = false)
 	private Person contractPartner;
 	

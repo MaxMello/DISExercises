@@ -1,13 +1,15 @@
 package de.dis2018.core;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import de.dis2018.data.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  *  Class for managing all database entities.
@@ -240,40 +242,26 @@ public class EstateService {
 	 * Adds some test data
 	 */
 	public void addTestData() {
-		//Hibernate Session erzeugen
-		Session session = sessionFactory.openSession();
-		
-		session.beginTransaction();
-		
 		EstateAgent m = new EstateAgent();
 		m.setName("Max Mustermann");
 		m.setAddress("Am Informatikum 9");
 		m.setLogin("max");
 		m.setPassword("max");
-
-		session.save(m);
-		session.getTransaction().commit();
-
-		session.beginTransaction();
+		writeToDB(s -> s.saveOrUpdate(m));
 		
 		Person p1 = new Person();
 		p1.setAddress("Informatikum");
 		p1.setName("Mustermann");
 		p1.setFirstname("Erika");
+		writeToDB(s -> s.saveOrUpdate(p1));
 		
 		
 		Person p2 = new Person();
 		p2.setAddress("Reeperbahn 9");
 		p2.setName("Albers");
 		p2.setFirstname("Hans");
+		writeToDB(s -> s.saveOrUpdate(p2));
 		
-		session.save(p1);
-		session.save(p2);
-
-		session.getTransaction().commit();
-		
-		
-		session.beginTransaction();
 		House h = new House();
 		h.setCity("Hamburg");
 		h.setPostalcode(22527);
@@ -284,28 +272,10 @@ public class EstateService {
 		h.setPrice(10000000);
 		h.setGarden(true);
 		h.setManager(m);
-		
-		session.save(h);
+		writeToDB(s -> s.saveOrUpdate(h));
 
-		session.getTransaction().commit();
 		
-		// Create Hibernate Session
-		session = sessionFactory.openSession();
-		session.beginTransaction();
-		EstateAgent m2 = (EstateAgent)session.get(EstateAgent.class, m.getId());
-		Set<Estate> immos = m2.getEstates();
-		Iterator<Estate> it = immos.iterator();
-		
-		while(it.hasNext()) {
-			Estate i = it.next();
-			System.out.println("Estate: "+i.getCity());
-		}
-		session.close();
-
-        session = sessionFactory.openSession();
-        session.beginTransaction();
-		
-		Apartment w = new Apartment();
+		final Apartment w = new Apartment();
 		w.setCity("Hamburg");
 		w.setPostalcode(22527);
 		w.setStreet("Vogt-Kölln-Street");
@@ -316,22 +286,22 @@ public class EstateService {
 		w.setKitchen(true);
 		w.setBalcony(false);
 		w.setManager(m);
+		writeToDB(s -> s.saveOrUpdate(w));
 
-		session.save(w);
 
-		w = new Apartment();
-		w.setCity("Berlin");
-		w.setPostalcode(22527);
-		w.setStreet("Vogt-Kölln-Street");
-		w.setStreetnumber("3");
-		w.setSquareArea(120);
-		w.setFloor(4);
-		w.setRent(790);
-		w.setKitchen(true);
-		w.setBalcony(false);
-		w.setManager(m);
+		final Apartment a = new Apartment();
+		a.setCity("Berlin");
+		a.setPostalcode(22527);
+		a.setStreet("Vogt-Kölln-Street");
+		a.setStreetnumber("3");
+		a.setSquareArea(120);
+		a.setFloor(4);
+		a.setRent(790);
+		a.setKitchen(true);
+		a.setBalcony(false);
+		a.setManager(m);
 
-        session.save(w);
+        writeToDB(s -> s.saveOrUpdate(a));
 
 		PurchaseContract pc = new PurchaseContract();
 		pc.setHouse(h);
@@ -342,7 +312,7 @@ public class EstateService {
 		pc.setNoOfInstallments(5);
 		pc.setIntrestRate(4);
 
-        session.save(pc);
+        writeToDB(s -> s.saveOrUpdate(pc));
 
 
         TenancyContract tc = new TenancyContract();
@@ -354,10 +324,8 @@ public class EstateService {
 		tc.setStartDate(new Date(System.currentTimeMillis()));
 		tc.setAdditionalCosts(65);
 		tc.setDuration(36);
-        session.save(tc);
 
-        session.getTransaction().commit();
-        session.close();
+		writeToDB(s -> s.saveOrUpdate(tc));
     }
 
     private void writeToDB(Consumer<Session> consumer) {
