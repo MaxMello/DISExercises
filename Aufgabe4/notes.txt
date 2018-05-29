@@ -155,19 +155,442 @@ Total wait time (ms)                       = Not Collected
 
 
 4.2)
-a
+a) # first connection: SELECT * FROM OPK WHERE ID>1;
 
-b
+   # seccond connection: INSERT INTO OPK VALUES(3, 'tim');
+    (erfolgreich hinzugefügt)
 
-c
+************* first connection: **********************************
+            Application Lock Snapshot
 
-d
+Snapshot timestamp                         = 2018-05-29 19.25.14.985815
 
-e
+Application handle                         = 4890
+Application ID                             = 134.100.4.58.20472.180529165537
+Sequence number                            = 00016
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 4
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x02001403050000000000000052
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x00000001
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 5
+ Object Type                 = Row
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = OPK
+ Mode                        = NS
+
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+ Lock Name                   = 0x02001403000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x00000011
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 788
+ Object Type                 = Table
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = OPK
+ Mode                        = IS
+
+ ***************************** second connection: ***************************
+             Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 19.26.41.440574
+
+Application handle                         = 4934
+Application ID                             = 134.100.4.58.12793.180529171025
+Sequence number                            = 00016
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 0
+Total wait time (ms)                       = Not Collected
+
+# same query again (first connection) => one result more
+# commit transaction of first connection => no locks left
+
+************* first connection: **********************************
+            Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 19.30.18.651303
+
+Application handle                         = 4890
+Application ID                             = 134.100.4.58.20472.180529165537
+Sequence number                            = 00017
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 0
+Total wait time (ms)                       = Not Collected
+
+
+
+b) # first connection : set current isolation=rr;
+   # commit
+
+   # first connection: SELECT * FROM OPK WHERE ID>1;
+
+   # seccond connection: INSERT INTO OPK VALUES(4, 'ulli');
+    (hinzufügen muss auf lock warten)
+
+  ****************first connection: *************************
+              Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 19.40.27.008033
+
+Application handle                         = 4890
+Application ID                             = 134.100.4.58.20472.180529165537
+Sequence number                            = 00019
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 3
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+ Lock Name                   = 0x02001403000000000000000054
+ Lock Attributes             = 0x00000010
+ Release Flags               = 0x00000013
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 788
+ Object Type                 = Table
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = OPK
+ Mode                        = S
+
+****************** second connection: *****************************
+            Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 19.42.07.380015
+
+Application handle                         = 4934
+Application ID                             = 134.100.4.58.12793.180529171025
+Sequence number                            = 00016
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = Lock-wait
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 4
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x03000000010000000100803A56
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Variation Lock
+ Mode                        = S
+
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+ Lock Name                   = 0x02001403000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 0
+ Hold Count                  = 0
+ Lock Object Name            = 788
+ Object Type                 = Table
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = OPK
+ Mode                        = IX
+ Status                      = Converting
+ Current Mode                = NO
+
+# query first connection => same result
+# commit first connection => insert can be executed (if not timed out)
+# query first connection again => inserted data is visible
+
+c) 
+# first connection: SELECT * FROM OPK WHERE ID=1;
+# second connection: UPDATE OPK SET NAME='tina2' WHERE ID=2; 
+# the whole table is locked, no row can be modified until commit
+
++++++++++++++++++first++++++++++++++++++++++++++++++++
+            Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 20.02.30.483919
+
+Application handle                         = 4890
+Application ID                             = 134.100.4.58.20472.180529165537
+Sequence number                            = 00021
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 3
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+ Lock Name                   = 0x02001403000000000000000054
+ Lock Attributes             = 0x00000010
+ Release Flags               = 0x00000001
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 788
+ Object Type                 = Table
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = OPK
+ Mode                        = S
+
+ +++++++++++++++++++++second ++++++++++++++++++++++++++++++++++++
+             Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 20.03.19.079479
+
+Application handle                         = 4934
+Application ID                             = 134.100.4.58.12793.180529171025
+Sequence number                            = 00043
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = Lock-wait
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 3
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x05000000010000000100404456
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Variation Lock
+ Mode                        = S
+
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+# commit first connection => update can be executed
+
+d)  
+# CREATE TABLE MPK(ID int not null, NAME varchar(20), PRIMARY KEY (ID));
+# INSERT INTO MPK VALUES(1, 'hugo');
+# INSERT INTO MPK VALUES(2, 'tina'); 
+
+e) 
+# first connection: SELECT * FROM MPK WHERE ID=1;
+
+***********************first connection:************************************
+            Application Lock Snapshot
+
+Snapshot timestamp                         = 2018-05-29 20.16.31.159621
+
+Application handle                         = 4890
+Application ID                             = 134.100.4.58.20472.180529165537
+Sequence number                            = 00025
+Application name                           = db2jcc_application
+CONNECT Authorization ID                   = VSISP27
+Application status                         = UOW Waiting
+Status change time                         = Not Collected
+Application code page                      = 1208
+Locks held                                 = 5
+Total wait time (ms)                       = Not Collected
+
+List Of Locks
+ Lock Name                   = 0x02001807040000000000000052
+ Lock Attributes             = 0x00000010
+ Release Flags               = 0x00000001
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 4
+ Object Type                 = Row
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = MPK
+ Mode                        = S
+
+ Lock Name                   = 0x5359535348323030DDECEF2841
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 0
+ Object Type                 = Internal Plan Lock
+ Mode                        = S
+
+ Lock Name                   = 0x02001807000000000000000054
+ Lock Attributes             = 0x00000010
+ Release Flags               = 0x00000001
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 1816
+ Object Type                 = Table
+ Tablespace Name             = USERSPACE1
+ Table Schema                = VSISP27
+ Table Name                  = MPK
+ Mode                        = IS
+
+ Lock Name                   = 0x00001101000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x40000000
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 273
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSUSERAUTH
+ Mode                        = IS
+
+ Lock Name                   = 0x00000500000000000000000054
+ Lock Attributes             = 0x00000000
+ Release Flags               = 0x00000001
+ Lock Count                  = 1
+ Hold Count                  = 0
+ Lock Object Name            = 5
+ Object Type                 = Table
+ Tablespace Name             = SYSCATSPACE
+ Table Schema                = SYSIBM
+ Table Name                  = SYSTABLES
+ Mode                        = IS
+
+# second connection: UPDATE MPK SET name='tina2' WHERE id=2;
+# update can be executed instantly
 
 
 4.3)
-a
+a) 
+# disable auto-commit of second connection
+# first connection: SELECT * FROM OPK WHERE ID=1; (Internal Plan, Table)
+# second connection: SELECT * FROM OPK WHERE ID=2; (Internal Plan, Table)
+# second connection: UPDATE OPK SET name='hugo2' WHERE ID=1;
+=> waiting for first connection to commit
+# first connection: UPDATE OPK SET name='tina3' WHERE ID=2;
+# commit first connection
+=> second connection can only be commited after commiting the first connection
 
-b
 
+b) 
+#second connection: set current isolation=rs;
+
+# first connection: SELECT * FROM OPK WHERE ID=1; 
+# second connection: SELECT * FROM OPK WHERE ID=2; 
+# second connection: UPDATE OPK SET name='hugo3' WHERE ID=1;
+=> waiting for first connection to commit
+# first connection: UPDATE OPK SET name='tina4' WHERE ID=2;
+# There was a deadlock between both transaction. after a few seconds the deadlock was detected by the db2-server and the transaction of the first connection was rolled back automatically
+# the transaction of the second connection could be executed
