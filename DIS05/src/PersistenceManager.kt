@@ -4,19 +4,25 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 
+/**
+ * Object = Singleton class
+ * Singleton PersistenceManager that handles transactions
+ */
 object PersistenceManager {
 
-    val userData = File("/tmp/DIS05/userData/session${System.currentTimeMillis()}/")
-    val logData = File("/tmp/DIS05/persistenceManager.log")
-    private val logSequenceNr = AtomicLong(0)
-    val buffer = ConcurrentHashMap<Long, TransactionData>()
-    private const val COMMIT = "[COMMIT]"
+    private val initializationTime = System.currentTimeMillis()
+    val userData = File("/tmp/DIS05/session$initializationTime/userData/")
+    val logData = File("/tmp/DIS05/session$initializationTime/persistenceManager.log")
+    private val logSequenceNr = AtomicLong(0) // Thread safe long
+    val buffer = ConcurrentHashMap<Long, TransactionData>() // Thread safe Map of transactionID to TransactionData
+    const val COMMIT = "[COMMIT]" // Value in LOG to mark a commit
 
     init {
         synchronized(this) {
             userData.mkdirs()
             logData.parentFile.mkdirs()
             if (logData.exists()) {
+                // If there is a logFile already, read the last LSN
                 logSequenceNr.set(logData.readLines().lastOrNull()?.split(";")?.firstOrNull()?.toLong() ?: 0)
             } else {
                 logData.createNewFile()
@@ -25,15 +31,10 @@ object PersistenceManager {
         }
     }
 
-    fun reset() {
-        logData.delete()
-        logSequenceNr.set(0)
-    }
-
     @Synchronized
     fun beginTransaction(): Long {
-        val transactionID =  Math.abs(UUID.randomUUID().leastSignificantBits)
-        buffer[transactionID] = TransactionData()
+        val transactionID =  Math.abs(UUID.randomUUID().leastSignificantBits) // Generate some large random number
+        buffer[transactionID] = TransactionData() // Already initialize the buffer
         return transactionID
     }
 
@@ -43,15 +44,13 @@ object PersistenceManager {
             this.committed = true
         } ?: throw IllegalStateException("Transaction with ID $transactionID never started")
 
-        buffer[transactionID]?.userData?.forEach {
-            val logEntry = LogEntry(logSequenceNr.incrementAndGet(), transactionID, it.pageID, COMMIT)
-            logEntry.persist(logData)
-            println("Log commit for transaction $transactionID")
-        }
+        LogEntry(logSequenceNr.incrementAndGet(), transactionID, -1L, COMMIT).persist(logData)
     }
 
     @Synchronized
     fun write(transactionID: Long, pageID: Long, data: String) {
+        require(data != COMMIT) // We do not allow the COMMIT symbol as input
+
         val logEntry = LogEntry(logSequenceNr.incrementAndGet(), transactionID, pageID, data)
         logEntry.persist(logData)
 
@@ -63,45 +62,60 @@ object PersistenceManager {
         }
         buffer[transactionID]?.userData?.add(UserEntry(logEntry.lsn, pageID, data))
 
-        // When more than 5 pages were committed
-        val committedTransactionIDs = buffer.filter { it.value.committed }.map { it.key }.toList()
-        if(buffer.filter { it.key in committedTransactionIDs }.map { it.value.userData.size }.sum() > 5) {
-            println("Buffer has more than 5 committed pages, write to persistent storage")
-            buffer.values.filter { it.committed }.map { it.userData }.flatten().forEach {
-                it.persist(userData)
-            }
-            committedTransactionIDs.forEach {
-                buffer.remove(it)
+        // When more than 5 pages in buffer, all committed ones get persisted
+        if(buffer.map { it.value.userData.size }.sum() > 5) {
+            // Get all transactions that are committed
+            val committedTransactionIDs = buffer.filter { it.value.committed }.map { it.key }.toList()
+            if(committedTransactionIDs.isNotEmpty()) {
+                println("Buffer has more than 5 pages, write ${committedTransactionIDs.size} committed transactions to persistent storage")
+                buffer.filter { it.key in committedTransactionIDs }.map { it.value.userData }.flatten().forEach {
+                    it.persist(userData)
+                    println("\tPersisting $it")
+                }
+                committedTransactionIDs.forEach {
+                    buffer.remove(it)
+                }
             }
         }
     }
-
-    private fun getLogEntry(lsn: Long): LogEntry? {
-        logData.readLines().firstOrNull { line -> line.startsWith(lsn.toString()) }?.let {
-            line ->
-            val (_, transactionID, pageID, data) = line.split(";")
-            return LogEntry(lsn, transactionID.toLong(), pageID.toLong(), data)
-        } ?: return null
-    }
-
-
 }
 
+
+// Data classes are normal classes with auto generated hashcode, equals, toString
+
+/**
+ * Data class holding a single log entry information
+ */
 data class LogEntry(val lsn: Long, val transactionID: Long, val pageID: Long, val redoInfo: String) {
 
+    /**
+     * Persist log information into a given file
+     */
     fun persist(file: File) {
-        println("Logging $this")
         file.appendText("$lsn;$transactionID;$pageID;$redoInfo\n")
+    }
+
+    fun toUserEntry(): UserEntry {
+        require(redoInfo != PersistenceManager.COMMIT)
+        return UserEntry(lsn, pageID, redoInfo)
     }
 }
 
+/**
+ * Data class holding the actual data
+ */
 data class UserEntry(val lsn: Long, val pageID: Long, val data: String) {
 
+    /**
+     * Persist data for page inside a given directory
+     */
     fun persist(dir: File) {
-        println("Persisting $this")
         File(dir, pageID.toString()).writeText("$lsn;$data")
     }
 
 }
 
+/**
+ * Data class holding TransactionData, making use of default arguments for parameter-less initialization
+ */
 data class TransactionData(var committed: Boolean = false, val userData: MutableList<UserEntry> = mutableListOf())
