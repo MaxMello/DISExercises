@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="DIS" uuid="a42299f5-165f-4849-bc07-d1ac0689f9a7">
+      <database-info product="DB2/LINUX" version="SQL09070" jdbc-version="4.1" driver-name="IBM Data Server Driver for JDBC and SQLJ" driver-version="4.23.42">
+        <extra-name-characters>@#</extra-name-characters>
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="upper" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>vsisp27</user-name>
+      <introspection-schemas>*:VSISP27</introspection-schemas>
+    </data-source>
+  </component>
+</project>

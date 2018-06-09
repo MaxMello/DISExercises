@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="DIS">
+  <database-model serializer="dbm" rdbms="DB2" format-version="4.7">
+    <root id="1"/>
+    <schema id="2" parent="1" name="DB2INST1"/>
+    <schema id="3" parent="1" name="NULLID"/>
+    <schema id="4" parent="1" name="SQLJ"/>
+    <schema id="5" parent="1" name="SYSCAT"/>
+    <schema id="6" parent="1" name="SYSFUN"/>
+    <schema id="7" parent="1" name="SYSIBM"/>
+    <schema id="8" parent="1" name="SYSIBMADM"/>
+    <schema id="9" parent="1" name="SYSIBMINTERNAL"/>
+    <schema id="10" parent="1" name="SYSIBMTS"/>
+    <schema id="11" parent="1" name="SYSPROC"/>
+    <schema id="12" parent="1" name="SYSPUBLIC"/>
+    <schema id="13" parent="1" name="SYSSTAT"/>
+    <schema id="14" parent="1" name="SYSTOOLS"/>
+    <schema id="15" parent="1" name="VSISP00"/>
+    <schema id="16" parent="1" name="VSISP01"/>
+    <schema id="17" parent="1" name="VSISP02"/>
+    <schema id="18" parent="1" name="VSISP03"/>
+    <schema id="19" parent="1" name="VSISP04"/>
+    <schema id="20" parent="1" name="VSISP05"/>
+    <schema id="21" parent="1" name="VSISP06"/>
+    <schema id="22" parent="1" name="VSISP07"/>
+    <schema id="23" parent="1" name="VSISP08"/>
+    <schema id="24" parent="1" name="VSISP09"/>
+    <schema id="25" parent="1" name="VSISP10"/>
+    <schema id="26" parent="1" name="VSISP11"/>
+    <schema id="27" parent="1" name="VSISP12"/>
+    <schema id="28" parent="1" name="VSISP13"/>
+    <schema id="29" parent="1" name="VSISP14"/>
+    <schema id="30" parent="1" name="VSISP15"/>
+    <schema id="31" parent="1" name="VSISP16"/>
+    <schema id="32" parent="1" name="VSISP17"/>
+    <schema id="33" parent="1" name="VSISP18"/>
+    <schema id="34" parent="1" name="VSISP19"/>
+    <schema id="35" parent="1" name="VSISP20"/>
+    <schema id="36" parent="1" name="VSISP21"/>
+    <schema id="37" parent="1" name="VSISP22"/>
+    <schema id="38" parent="1" name="VSISP23"/>
+    <schema id="39" parent="1" name="VSISP24"/>
+    <schema id="40" parent="1" name="VSISP25"/>
+    <schema id="41" parent="1" name="VSISP26"/>
+    <schema id="42" parent="1" name="VSISP27">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="43" parent="1" name="VSISP28"/>
+    <schema id="44" parent="1" name="VSISP29"/>
+    <schema id="45" parent="1" name="VSISP30"/>
+    <schema id="46" parent="1" name="VSISP31"/>
+    <schema id="47" parent="1" name="VSISP32"/>
+    <schema id="48" parent="1" name="VSISP33"/>
+    <schema id="49" parent="1" name="VSISP34"/>
+    <schema id="50" parent="1" name="VSISP35"/>
+    <schema id="51" parent="1" name="VSISP36"/>
+    <schema id="52" parent="1" name="VSISP37"/>
+    <schema id="53" parent="1" name="VSISP38"/>
+    <schema id="54" parent="1" name="VSISP39"/>
+    <schema id="55" parent="1" name="VSISP40"/>
+    <schema id="56" parent="1" name="VSISP41"/>
+    <schema id="57" parent="1" name="VSISP42"/>
+    <schema id="58" parent="1" name="VSISP43"/>
+    <schema id="59" parent="1" name="VSISP44"/>
+    <schema id="60" parent="1" name="VSISP45"/>
+    <schema id="61" parent="1" name="VSISP46"/>
+    <schema id="62" parent="1" name="VSISP47"/>
+    <schema id="63" parent="1" name="VSISP48"/>
+    <schema id="64" parent="1" name="VSISP49"/>
+    <schema id="65" parent="1" name="VSISP50"/>
+    <schema id="66" parent="1" name="VSISP51"/>
+    <schema id="67" parent="1" name="VSISP52"/>
+    <schema id="68" parent="1" name="VSISP53"/>
+    <schema id="69" parent="1" name="VSISP54"/>
+    <schema id="70" parent="1" name="VSISP55"/>
+    <schema id="71" parent="1" name="VSISP56"/>
+    <schema id="72" parent="1" name="VSISP57"/>
+    <schema id="73" parent="1" name="VSISP58"/>
+    <schema id="74" parent="1" name="VSISP59"/>
+    <schema id="75" parent="1" name="VSISP60"/>
+    <schema id="76" parent="1" name="VSISP61"/>
+    <schema id="77" parent="1" name="VSISP62"/>
+    <schema id="78" parent="1" name="VSISP63"/>
+    <schema id="79" parent="1" name="VSISP64"/>
+    <schema id="80" parent="1" name="VSISP65"/>
+    <schema id="81" parent="1" name="VSISP66"/>
+    <schema id="82" parent="1" name="VSISP67"/>
+    <schema id="83" parent="1" name="VSISP68"/>
+    <schema id="84" parent="1" name="VSISP69"/>
+    <schema id="85" parent="1" name="VSISP70"/>
+    <schema id="86" parent="1" name="VSISP71"/>
+    <schema id="87" parent="1" name="VSISP72"/>
+    <schema id="88" parent="1" name="VSISP73"/>
+    <schema id="89" parent="1" name="VSISP74"/>
+    <schema id="90" parent="1" name="VSISP75"/>
+    <schema id="91" parent="1" name="VSISP76"/>
+    <schema id="92" parent="1" name="VSISP77"/>
+    <schema id="93" parent="1" name="VSISP78"/>
+    <schema id="94" parent="1" name="VSISP79"/>
+    <schema id="95" parent="1" name="VSISP80"/>
+    <schema id="96" parent="1" name="VSISP81"/>
+    <schema id="97" parent="1" name="VSISP82"/>
+    <schema id="98" parent="1" name="VSISP83"/>
+    <schema id="99" parent="1" name="VSISP84"/>
+    <schema id="100" parent="1" name="VSISP85"/>
+    <schema id="101" parent="1" name="VSISP86"/>
+    <schema id="102" parent="1" name="VSISP87"/>
+    <schema id="103" parent="1" name="VSISP88"/>
+    <schema id="104" parent="1" name="VSISP89"/>
+    <schema id="105" parent="1" name="VSISP90"/>
+    <schema id="106" parent="1" name="VSISP91"/>
+    <schema id="107" parent="1" name="VSISP92"/>
+    <schema id="108" parent="1" name="VSISP93"/>
+    <schema id="109" parent="1" name="VSISP94"/>
+    <schema id="110" parent="1" name="VSISP95"/>
+    <schema id="111" parent="1" name="VSISP96"/>
+    <schema id="112" parent="1" name="VSISP97"/>
+    <schema id="113" parent="1" name="VSISP98"/>
+    <schema id="114" parent="1" name="VSISP99"/>
+    <table id="115" parent="42" name="APARTMENT"/>
+    <table id="116" parent="42" name="CONTRACT"/>
+    <table id="117" parent="42" name="ESTATE"/>
+    <table id="118" parent="42" name="ESTATEAGENT"/>
+    <table id="119" parent="42" name="HOUSE"/>
+    <table id="120" parent="42" name="PERSON"/>
+    <table id="121" parent="42" name="PURCHASECONTRACT"/>
+    <table id="122" parent="42" name="TENANCYCONTRACT"/>
+    <column id="123" parent="115" name="BALCONY">
+      <Position>1</Position>
+      <DataType>SMALLINT(5)|5</DataType>
+    </column>
+    <column id="124" parent="115" name="FLOOR">
+      <Position>2</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="125" parent="115" name="KITCHEN">
+      <Position>3</Position>
+      <DataType>SMALLINT(5)|5</DataType>
+    </column>
+    <column id="126" parent="115" name="RENT">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="127" parent="115" name="ROOMS">
+      <Position>5</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="128" parent="115" name="ID">
+      <Position>6</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="129" parent="115" name="SQL180516111211720">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="130" parent="115" name="FKKUXLM9BXCRUBUONLL3HPTCMUF">
+      <ColNames>ID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>ESTATE</RefTableName>
+      <RefKeyName>SQL180516111216150</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="131" parent="116" name="ID">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="132" parent="116" name="CONTRACTNO">
+      <Position>2</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="133" parent="116" name="DATE">
+      <Position>3</Position>
+      <DataType>TIMESTAMP(26,6)|93</DataType>
+    </column>
+    <column id="134" parent="116" name="PLACE">
+      <Position>4</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="135" parent="116" name="CONTRACTPARTNERID">
+      <Position>5</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <index id="136" parent="116" name="UK_K26ACCYT9FUPC47F4RFS9I9UX">
+      <ColNames>CONTRACTNO</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="137" parent="116" name="SQL180516111214020">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="138" parent="116" name="FKRH71MMD1260DFF2HP71YT0C8N">
+      <ColNames>CONTRACTPARTNERID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>PERSON</RefTableName>
+      <RefKeyName>SQL180516111221950</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="139" parent="117" name="ID">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="140" parent="117" name="CITY">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="141" parent="117" name="POSTALCODE">
+      <Position>3</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="142" parent="117" name="SQUAREAREA">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="143" parent="117" name="STREET">
+      <Position>5</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="144" parent="117" name="STREETNUMBER">
+      <Position>6</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="145" parent="117" name="MANAGERID">
+      <Position>7</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="146" parent="117" name="SQL180516111216150">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="147" parent="117" name="FKQWDGGE919F8RPQQHGUWRL84MX">
+      <ColNames>MANAGERID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>ESTATEAGENT</RefTableName>
+      <RefKeyName>SQL180516111218280</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="148" parent="118" name="ID">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="149" parent="118" name="ADDRESS">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="150" parent="118" name="LOGIN">
+      <Position>3</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="151" parent="118" name="NAME">
+      <Position>4</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="152" parent="118" name="PASSWORD">
+      <Position>5</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <index id="153" parent="118" name="UK_ERHH7HLHJOVWTQIORJCH5CQ48">
+      <ColNames>LOGIN</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="154" parent="118" name="SQL180516111218280">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="155" parent="119" name="FLOORS">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="156" parent="119" name="GARDEN">
+      <Position>2</Position>
+      <DataType>SMALLINT(5)|5</DataType>
+    </column>
+    <column id="157" parent="119" name="PRICE">
+      <Position>3</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="158" parent="119" name="ID">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <key id="159" parent="119" name="SQL180516111219990">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="160" parent="119" name="FK2YBI6F0GQ2GPK46DNLCTO16PH">
+      <ColNames>ID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>ESTATE</RefTableName>
+      <RefKeyName>SQL180516111216150</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="161" parent="120" name="ID">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="162" parent="120" name="ADDRESS">
+      <Position>2</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="163" parent="120" name="FIRSTNAME">
+      <Position>3</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <column id="164" parent="120" name="NAME">
+      <Position>4</Position>
+      <DataType>VARCHAR(255)|12</DataType>
+    </column>
+    <key id="165" parent="120" name="SQL180516111221950">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="166" parent="121" name="INTRESTRATE">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="167" parent="121" name="NOOFINSTALLMENTS">
+      <Position>2</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="168" parent="121" name="ID">
+      <Position>3</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="169" parent="121" name="HOUSEID">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <key id="170" parent="121" name="SQL180516111223540">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="171" parent="121" name="FK9VOV0JCB33JIWI7OVF1GHUX9N">
+      <ColNames>ID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>CONTRACT</RefTableName>
+      <RefKeyName>SQL180516111214020</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <foreign-key id="172" parent="121" name="FKKMU5HRHMDN2B2WK3V9OH2MN8">
+      <ColNames>HOUSEID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>HOUSE</RefTableName>
+      <RefKeyName>SQL180516111219990</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <column id="173" parent="122" name="ADDITIONALCOSTS">
+      <Position>1</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="174" parent="122" name="DURATION">
+      <Position>2</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <column id="175" parent="122" name="STARTDATE">
+      <Position>3</Position>
+      <DataType>TIMESTAMP(26,6)|93</DataType>
+    </column>
+    <column id="176" parent="122" name="ID">
+      <Position>4</Position>
+      <DataType>INTEGER(10)|4</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="177" parent="122" name="APARTMENTID">
+      <Position>5</Position>
+      <DataType>INTEGER(10)|4</DataType>
+    </column>
+    <key id="178" parent="122" name="SQL180516111225260">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="179" parent="122" name="FK4EJWGEP5ADOEIQJKKFF9CJS53">
+      <ColNames>ID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>CONTRACT</RefTableName>
+      <RefKeyName>SQL180516111214020</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+    <foreign-key id="180" parent="122" name="FKR96KL9WG5OB2UFX3WN9O4IKGE">
+      <ColNames>APARTMENTID</ColNames>
+      <RefSchemaName>VSISP27</RefSchemaName>
+      <RefTableName>APARTMENT</RefTableName>
+      <RefKeyName>SQL180516111211720</RefKeyName>
+      <RefColNames>ID</RefColNames>
+    </foreign-key>
+  </database-model>
+</dataSource>
