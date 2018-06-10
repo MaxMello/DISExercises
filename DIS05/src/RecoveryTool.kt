@@ -20,12 +20,12 @@ class RecoveryTool(val userData: File, val logData: File) {
                     println("Found committed transaction $taid")
                     logs.filter { it.redoInfo != PersistenceManager.COMMIT }.forEach {
                         val existingData = File(userData, it.pageID.toString())
-                        if(existingData.exists() &&
-                                (existingData.readText().split(";").firstOrNull()?.toLong() ?: 0) < it.lsn) {
+                        val persistedLSN = if(existingData.exists()) existingData.readText().split(";").firstOrNull()?.toLong() ?: 0 else -1
+                        if(persistedLSN < it.lsn) {
                             it.toUserEntry().persist(userData)
-                            println("\tPersisting $it, because persisted lsn is smaller")
+                            println("\tPersisting because persisted lsn=$persistedLSN < ${it.lsn} | $it")
                         } else {
-                            println("\tNot Persisting $it, because persisted lsn is bigger/equal")
+                            println("\tNot Persisting because persisted lsn=$persistedLSN >= ${it.lsn} | $it")
                         }
                     }
                 }
