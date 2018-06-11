@@ -18,7 +18,7 @@ class RecoveryTool(val userData: File, val logData: File) {
         logEntries.groupBy { it.transactionID }.filter { it.value.any { it.redoInfo == PersistenceManager.COMMIT } }
                 .forEach { taid, logs ->
                     println("Found committed transaction $taid")
-                    logs.filter { it.redoInfo != PersistenceManager.COMMIT }.forEach {
+                    logs.filter { it.redoInfo != PersistenceManager.COMMIT && it.redoInfo != PersistenceManager.BOT }.forEach {
                         val existingData = File(userData, it.pageID.toString())
                         val persistedLSN = if(existingData.exists()) existingData.readText().split(";").firstOrNull()?.toLong() ?: 0 else -1
                         if(persistedLSN < it.lsn) {

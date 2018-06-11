@@ -16,6 +16,7 @@ object PersistenceManager {
     private val logSequenceNr = AtomicLong(0) // Thread safe long
     val buffer = ConcurrentHashMap<Long, TransactionData>() // Thread safe Map of transactionID to TransactionData
     const val COMMIT = "[COMMIT]" // Value in LOG to mark a commit
+    const val BOT = "[BOT]"
 
     init {
         synchronized(this) {
@@ -35,6 +36,7 @@ object PersistenceManager {
     fun beginTransaction(): Long {
         val transactionID =  Math.abs(UUID.randomUUID().leastSignificantBits) // Generate some large random number
         buffer[transactionID] = TransactionData() // Already initialize the buffer
+        LogEntry(logSequenceNr.incrementAndGet(), transactionID, -1L, BOT).persist(logData)
         return transactionID
     }
 
@@ -50,6 +52,7 @@ object PersistenceManager {
     @Synchronized
     fun write(transactionID: Long, pageID: Long, data: String) {
         require(data != COMMIT) // We do not allow the COMMIT symbol as input
+        require(data != BOT) // We do not allow the Begin of Transaction symbol as input
 
         val logEntry = LogEntry(logSequenceNr.incrementAndGet(), transactionID, pageID, data)
         logEntry.persist(logData)
