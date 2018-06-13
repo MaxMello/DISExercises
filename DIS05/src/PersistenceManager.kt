@@ -100,6 +100,7 @@ data class LogEntry(val lsn: Long, val transactionID: Long, val pageID: Long, va
 
     fun toUserEntry(): UserEntry {
         require(redoInfo != PersistenceManager.COMMIT)
+        require(redoInfo != PersistenceManager.BOT)
         return UserEntry(lsn, pageID, redoInfo)
     }
 }

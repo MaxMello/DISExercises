@@ -1,6 +1,6 @@
 import java.io.File
 
-class RecoveryTool(val userData: File, val logData: File) {
+class RecoveryTool(val userData: File, logData: File) {
 
     private val logEntries: List<LogEntry>
 
@@ -11,10 +11,8 @@ class RecoveryTool(val userData: File, val logData: File) {
         }
     }
 
-    /**
-     * TODO What is a "winner" transaction, except that it has to have committed?
-     */
     fun analyzeAndRedo() {
+        // Group by keeps the order of the list value and also of the transactions, because it uses LinkedHashMap
         logEntries.groupBy { it.transactionID }.filter { it.value.any { it.redoInfo == PersistenceManager.COMMIT } }
                 .forEach { taid, logs ->
                     println("Found committed transaction $taid")
