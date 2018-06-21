@@ -19,6 +19,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -43,12 +44,14 @@ public class MovieService extends MovieServiceBase {
 		// Connect to local machine
 		try {
 			// TODO: connect to MongoDB
-			mongo = null;
+			mongo = new MongoClient(); //("localhost" , 27017);
+			System.out.println(mongo);
 		} catch (Exception e) {
 			System.out.println("No MongoDB server running on localhost");
 		}
 		// TODO: Select database "imdb"
-		db = null;
+		db = mongo.getDB("imdb");
+		
 		// Create a GriFS FileSystem Object using the db
 		fs = new GridFS(db);
 		// See this method on how to use GridFS
@@ -58,9 +61,12 @@ public class MovieService extends MovieServiceBase {
 		// Enable Full Text Search
 		enableTextSearch();
 
+		System.out.println("Databases: "+mongo.getDatabaseNames());
+        System.out.println("TODO: Collections in db \"imdb\": "+db.getCollectionNames());
+        
 		// TODO: Take "movies" and "tweets" collection
-		movies = null;
-		tweets = null;
+		movies = db.getCollection("movies");
+		tweets = db.getCollection("tweets");
 
 		// If movie database isn't filled (has less than 10000 documents) delete
 		// everything and fill it
