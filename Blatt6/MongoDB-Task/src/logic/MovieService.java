@@ -1,29 +1,20 @@
 package logic;
 
+import com.mongodb.*;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.gridfs.GridFSInputFile;
+import com.mongodb.util.JSON;
+import twitter4j.GeoLocation;
+import twitter4j.Status;
+import twitter4j.json.DataObjectFactory;
+
 import java.io.InputStream;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import twitter4j.GeoLocation;
-import twitter4j.Status;
-import twitter4j.json.DataObjectFactory;
-
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.gridfs.GridFSInputFile;
-import com.mongodb.util.JSON;
 
 /**
  * This class holds the data/backend logic for the Movie Web-App. It uses
@@ -43,13 +34,11 @@ public class MovieService extends MovieServiceBase {
 	public MovieService() {
 		// Connect to local machine
 		try {
-			// TODO: connect to MongoDB
 			mongo = new MongoClient(); //("localhost" , 27017);
 			System.out.println(mongo);
 		} catch (Exception e) {
 			System.out.println("No MongoDB server running on localhost");
 		}
-		// TODO: Select database "imdb"
 		db = mongo.getDB("imdb");
 		
 		// Create a GriFS FileSystem Object using the db
@@ -64,13 +53,13 @@ public class MovieService extends MovieServiceBase {
 		System.out.println("Databases: "+mongo.getDatabaseNames());
         System.out.println("TODO: Collections in db \"imdb\": "+db.getCollectionNames());
         
-		// TODO: Take "movies" and "tweets" collection
 		movies = db.getCollection("movies");
 		tweets = db.getCollection("tweets");
 
 		// If movie database isn't filled (has less than 10000 documents) delete
 		// everything and fill it
 		if (movies.count() < 10000) {
+		    System.out.println("Recreate movie data");
 			createMovieData();
 		}
 
@@ -483,7 +472,7 @@ public class MovieService extends MovieServiceBase {
 		// loadMovies_megaNice("/data/imdb_megaNice-full.csv");
 		// Smaller Dataset with less properties:
 		// List<DBObject> data = loadMovies("/data/imdb_nicer-full.csv");
-		loadJSON("/data/movies.json", movies);
+		loadJSON("/data/movies_small.json", movies);
 		loadJSON("/data/tweets.json", tweets);
 	}
 
