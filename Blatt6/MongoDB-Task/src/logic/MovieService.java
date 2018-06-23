@@ -40,32 +40,33 @@ public class MovieService extends MovieServiceBase {
 			System.out.println("No MongoDB server running on localhost");
 		}
 		db = mongo.getDB("imdb");
-		
 		// Create a GriFS FileSystem Object using the db
 		fs = new GridFS(db);
 		// See this method on how to use GridFS
 		createSampleImage();
-		// Print the name of all collections in that database
-		printCollections();
 		// Enable Full Text Search
 		enableTextSearch();
 
-		System.out.println("Databases: "+mongo.getDatabaseNames());
-        System.out.println("TODO: Collections in db \"imdb\": "+db.getCollectionNames());
-        
+		System.out.println("Databases: "+ mongo.getDatabaseNames());
 		movies = db.getCollection("movies");
 		tweets = db.getCollection("tweets");
 
 		// If movie database isn't filled (has less than 10000 documents) delete
 		// everything and fill it
-		if (movies.count() < 10000) {
+		if (movies.count() < 1000) {
 		    System.out.println("Recreate movie data");
 			createMovieData();
 		}
 
 		// TODO: Index Movie attributes "title", "rating", "votes", "tweets.coordinates"
 
+        movies.ensureIndex("title");
+		movies.ensureIndex("rating");
+		movies.ensureIndex("votes");
 		tweets.ensureIndex(new BasicDBObject("coordinates", "2dsphere"));
+
+        // Print the name of all collections in that database
+        printCollections();
 	}
 
 	/**
@@ -87,8 +88,8 @@ public class MovieService extends MovieServiceBase {
 	 * @return the matching DBObject
 	 */
 	public DBObject findMovieByTitle(String title) {
-		// TODO: implement
-		DBObject result = null;
+		DBObject result = movies.findOne(new BasicDBObject("title", title));
+		System.out.println("[MovieService::findMovieByTitle] " + result);
 		return result;
 	}
 
@@ -99,8 +100,7 @@ public class MovieService extends MovieServiceBase {
 	 * @return the DBCursor for the query
 	 */
 	public DBCursor getViewableMovies() {
-		DBCursor results = movies.find(new BasicDBObject("tweets.coordinates", new BasicDBObject("$exists", true)));
-		return results;
+        return movies.find(new BasicDBObject("tweets.coordinates", new BasicDBObject("$exists", true)));
 	}
 
 	/**
@@ -117,9 +117,11 @@ public class MovieService extends MovieServiceBase {
 	 * @return the DBCursor for the query
 	 */
 	public DBCursor getBestMovies(int minVotes, double minRating, int limit) {
-		// TODO: implement
-		DBCursor best = null;
-		return best;
+        BasicDBObject gtQuery = new BasicDBObject();
+        gtQuery.put("votes", new BasicDBObject("$gt", minVotes));
+        gtQuery.put("rating", new BasicDBObject("$gt", minRating));
+        System.out.println("[MovieService::getBestMovies]" + gtQuery);
+        return movies.find(gtQuery).limit(limit);
 	}
 
 	/**
@@ -134,9 +136,10 @@ public class MovieService extends MovieServiceBase {
 	 */
 	public DBCursor getByGenre(String genreList, int limit) {
 		String[] genres = genreList.split(",");
-		//TODO: implement
-		DBCursor result = null;
-		return result;
+        BasicDBObject query = new BasicDBObject();
+        query.put("genre", new BasicDBObject("$all", genres));
+        System.out.println("[MovieService::getByGenre]" + query);
+        return movies.find(query).limit(limit);
 	}
 
 	/**
@@ -152,9 +155,9 @@ public class MovieService extends MovieServiceBase {
 	 * @return the DBCursor for the query
 	 */
 	public DBCursor searchByPrefix(String titlePrefix, int limit) {
-		//TODO: implement
-		DBObject prefixQuery = null;
-		return movies.find(prefixQuery).limit(limit);
+        DBObject query = new BasicDBObject("title", Pattern.compile("^" + titlePrefix + ".*"));
+        System.out.println("[MovieService::searchByPrefix] " + query);
+		return movies.find(query).limit(limit);
 	}
 
 	/**
