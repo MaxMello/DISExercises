@@ -42,7 +42,7 @@ public class MovieService extends MovieServiceBase {
 		db = mongo.getDB("imdb");
 		// Create a GriFS FileSystem Object using the db
 		fs = new GridFS(db);
-		// See this method on how to use GridFS
+
 		createSampleImage();
 		// Enable Full Text Search
 		enableTextSearch();
@@ -84,10 +84,13 @@ public class MovieService extends MovieServiceBase {
 	 * @param title
 	 *            the title to query
 	 * @return the matching DBObject
+     *
+     * 
 	 */
 	public DBObject findMovieByTitle(String title) {
-		DBObject result = movies.findOne(new BasicDBObject("title", title));
-		System.out.println("[MovieService::findMovieByTitle] " + result);
+	    DBObject query = new BasicDBObject("title", title);
+		DBObject result = movies.findOne(query);
+		System.out.println("[MovieService::findMovieByTitle] query=" + query + " result=" + result);
 		return result;
 	}
 
@@ -98,8 +101,11 @@ public class MovieService extends MovieServiceBase {
 	 * @return the DBCursor for the query
 	 */
 	public DBCursor getViewableMovies() {
-        return movies.find(new BasicDBObject("tweets.coordinates", new BasicDBObject("$exists", true)));
-	}
+	    DBObject query = new BasicDBObject("tweets.coordinates", new BasicDBObject("$exists", true));
+        DBCursor result = movies.find(query);
+        System.out.println("[MovieService::getViewableMovies] query=" + query + " result=" + result);
+        return result;
+    }
 
 	/**
 	 * Find the best movies, i.e. those that have a rating greater minRating and
@@ -113,14 +119,17 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor getBestMovies(int minVotes, double minRating, int limit) {
         BasicDBObject gtQuery = new BasicDBObject();
         gtQuery.put("votes", new BasicDBObject("$gt", minVotes));
         gtQuery.put("rating", new BasicDBObject("$gt", minRating));
-        System.out.println("[MovieService::getBestMovies]" + gtQuery);
-        return movies.find(gtQuery).limit(limit);
-	}
+        DBCursor result =  movies.find(gtQuery).limit(limit);
+        System.out.println("[MovieService::getBestMovies] query=" + gtQuery + " result=" + result);
+        return result;
+    }
 
 	/**
 	 * Find movies by genres. To achieve that, find all movies whose "genre"
@@ -131,14 +140,16 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor getByGenre(String genreList, int limit) {
 		String[] genres = genreList.split(",");
-        BasicDBObject query = new BasicDBObject();
-        query.put("genre", new BasicDBObject("$all", genres));
-        System.out.println("[MovieService::getByGenre]" + query);
-        return movies.find(query).limit(limit);
-	}
+        BasicDBObject query = new BasicDBObject("genre", new BasicDBObject("$all", genres));
+        DBCursor result = movies.find(query).limit(limit);
+        System.out.println("[MovieService::getByGenre] query=" + query + " result=" + result);
+        return result;
+    }
 
 	/**
 	 * Find movies by prefix, i.e. find movies whose "title" property begins
@@ -151,12 +162,15 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor searchByPrefix(String titlePrefix, int limit) {
         DBObject query = new BasicDBObject("title", Pattern.compile("^" + titlePrefix + ".*"));
-        System.out.println("[MovieService::searchByPrefix] " + query);
-		return movies.find(query).limit(limit);
-	}
+		DBCursor result =  movies.find(query).limit(limit);
+        System.out.println("[MovieService::searchByPrefix] query=" + query + " result=" + result);
+        return result;
+    }
 
 	/**
 	 * Suggest movies based on a title prefix. This is used for the search
@@ -175,6 +189,8 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor suggest(String prefix, int limit) {
 		DBObject query = new BasicDBObject("title", Pattern.compile("^" + prefix + ".*"));
@@ -189,6 +205,8 @@ public class MovieService extends MovieServiceBase {
 	 * once subject of a tweet.
 	 * 
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor getTweetedMovies() {
         DBObject query = new BasicDBObject("tweets", new BasicDBObject("$exists", true));
@@ -205,12 +223,17 @@ public class MovieService extends MovieServiceBase {
 	 *            the movie _id of the move where the comment was set.
 	 * @param comment
 	 *            the comment to save
+     *
+     * 
 	 */
 	public void saveMovieComment(String id, String comment) {
         DBObject query = new BasicDBObject("_id", id);
-        WriteResult result = movies.update(query, new BasicDBObject("comment", comment));
+        DBObject result1 = movies.findOne(query);
+        System.out.println("[MovieService::saveMovieComment] Movie=" + result1);
+        WriteResult result = movies.update(query, new BasicDBObject("$set", new BasicDBObject("comment", comment)));
         System.out.println("[MovieService::saveMovieComment] id=" + id + " query=" + query + " result=" + result);
-
+        DBObject result2 = movies.findOne(query);
+        System.out.println("[MovieService::saveMovieComment] After save movie=" + result2);
 	}
 
 	/**
@@ -220,10 +243,12 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor getGeotaggedTweets(int limit) {
         DBObject query = new BasicDBObject("coordinates", new BasicDBObject("$ne", null));
-        DBCursor results = movies.find(query);
+        DBCursor results = tweets.find(query).limit(limit);
         System.out.println("[MovieService::getGeotaggedTweets] query="+query+" result="+results);
 		return results;
 	}
@@ -381,6 +406,8 @@ public class MovieService extends MovieServiceBase {
 	 * @param limit
 	 *            maximum number of records to be returned
 	 * @return the DBCursor for the query
+     *
+     * 
 	 */
 	public DBCursor getNewestTweets(int limit) {
 	    DBObject sort = new BasicDBObject("_id", -1);
@@ -436,6 +463,7 @@ public class MovieService extends MovieServiceBase {
 		file.setContentType("image/png");
 		file.setFilename("sample.png");
 		file.save();
+		System.out.println("Saved sample image " + file);
 	}
 
 	/**
@@ -447,8 +475,11 @@ public class MovieService extends MovieServiceBase {
 	 * @return The retrieved GridFS File
 	 */
 	public GridFSDBFile getFile(String name) {
-        DBObject query = new BasicDBObject("name", name);
+        DBObject query = new BasicDBObject("filename", name);
         GridFSDBFile gFile = fs.findOne(query);
+        if(gFile == null) {
+            gFile = fs.findOne(new BasicDBObject("filename", "sample.png"));
+        }
         System.out.println("[MovieService::getFile] query=" + query + " gFile=" + gFile);
 		return gFile;
 	}
