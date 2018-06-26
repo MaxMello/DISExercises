@@ -1,16 +1,10 @@
 package web;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.util.JSON;
 import logic.MovieService;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -21,21 +15,18 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.server.handler.*;
 import org.eclipse.jetty.util.resource.Resource;
-
 import twitter.MovieTweetHandler;
 import twitter.TweetStream;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.util.JSON;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 public class RestServer {
 
@@ -194,11 +185,18 @@ public class RestServer {
 					//Serve from Gridfs
 					if(url == null) {
 						GridFSDBFile file = ms.getFile(name);
-						response.setStatus(HttpServletResponse.SC_OK);
-						response.setContentLength((int) file.getLength());
-						response.setContentType(file.getContentType());
-						file.writeTo(response.getOutputStream());
-						baseRequest.setHandled(true);
+						if(file != null) {
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.setContentLength((int) file.getLength());
+							response.setContentType(file.getContentType());
+							file.writeTo(response.getOutputStream());
+							baseRequest.setHandled(true);
+						} else {
+							response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+							response.setContentLength(0);
+							response.setContentType("");
+							baseRequest.setHandled(true);
+						}
 						return;
 					}
 					//Import from IMDB
