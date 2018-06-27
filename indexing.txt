@@ -1,0 +1,211 @@
+
+Without Index: 508 millis
+With Index: 365 millis
+
+db.movies.dropIndexes()
+
+> db.movies.find({rating :{$gt: 6.14 ,$lt: 7.78}}).explain( "executionStats" )
+{
+        "queryPlanner" : {
+                "plannerVersion" : 1,
+                "namespace" : "imdb.movies",
+                "indexFilterSet" : false,
+                "parsedQuery" : {
+                        "$and" : [
+                                {
+                                        "rating" : {
+                                                "$lt" : 7.78
+                                        }
+                                },
+                                {
+                                        "rating" : {
+                                                "$gt" : 6.14
+                                        }
+                                }
+                        ]
+                },
+                "winningPlan" : {
+                        "stage" : "COLLSCAN",
+                        "filter" : {
+                                "$and" : [
+                                        {
+                                                "rating" : {
+                                                        "$lt" : 7.78
+                                                }
+                                        },
+                                        {
+                                                "rating" : {
+                                                        "$gt" : 6.14
+                                                }
+                                        }
+                                ]
+                        },
+                        "direction" : "forward"
+                },
+                "rejectedPlans" : [ ]
+        },
+        "executionStats" : {
+                "executionSuccess" : true,
+                "nReturned" : 94327,
+                "executionTimeMillis" : 536,
+                "totalKeysExamined" : 0,
+                "totalDocsExamined" : 241923,
+                "executionStages" : {
+                        "stage" : "COLLSCAN",
+                        "filter" : {
+                                "$and" : [
+                                        {
+                                                "rating" : {
+                                                        "$lt" : 7.78
+                                                }
+                                        },
+                                        {
+                                                "rating" : {
+                                                        "$gt" : 6.14
+                                                }
+                                        }
+                                ]
+                        },
+                        "nReturned" : 94327,
+                        "executionTimeMillisEstimate" : 508,
+                        "works" : 241925,
+                        "advanced" : 94327,
+                        "needTime" : 147597,
+                        "needYield" : 0,
+                        "saveState" : 1912,
+                        "restoreState" : 1912,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "direction" : "forward",
+                        "docsExamined" : 241923
+                }
+        },
+        "serverInfo" : {
+                "host" : "DESKTOP-GJB7PRT",
+                "port" : 27017,
+                "version" : "3.6.5-87-g91d0924489",
+                "gitVersion" : "91d09244898d046880fdf7b82741795b56233883"
+        },
+        "ok" : 1
+}
+
+> db.movies.ensureIndex ({ rating : 1})
+{
+        "createdCollectionAutomatically" : false,
+        "numIndexesBefore" : 1,
+        "numIndexesAfter" : 2,
+        "ok" : 1
+}
+
+> db.movies.find({rating :{$gt: 6.14 ,$lt: 7.78}}).explain( "executionStats" )
+{
+        "queryPlanner" : {
+                "plannerVersion" : 1,
+                "namespace" : "imdb.movies",
+                "indexFilterSet" : false,
+                "parsedQuery" : {
+                        "$and" : [
+                                {
+                                        "rating" : {
+                                                "$lt" : 7.78
+                                        }
+                                },
+                                {
+                                        "rating" : {
+                                                "$gt" : 6.14
+                                        }
+                                }
+                        ]
+                },
+                "winningPlan" : {
+                        "stage" : "FETCH",
+                        "inputStage" : {
+                                "stage" : "IXSCAN",
+                                "keyPattern" : {
+                                        "rating" : 1
+                                },
+                                "indexName" : "rating_1",
+                                "isMultiKey" : false,
+                                "multiKeyPaths" : {
+                                        "rating" : [ ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                        "rating" : [
+                                                "(6.14, 7.78)"
+                                        ]
+                                }
+                        }
+                },
+                "rejectedPlans" : [ ]
+        },
+        "executionStats" : {
+                "executionSuccess" : true,
+                "nReturned" : 94327,
+                "executionTimeMillis" : 365,
+                "totalKeysExamined" : 94327,
+                "totalDocsExamined" : 94327,
+                "executionStages" : {
+                        "stage" : "FETCH",
+                        "nReturned" : 94327,
+                        "executionTimeMillisEstimate" : 350,
+                        "works" : 94328,
+                        "advanced" : 94327,
+                        "needTime" : 0,
+                        "needYield" : 0,
+                        "saveState" : 749,
+                        "restoreState" : 749,
+                        "isEOF" : 1,
+                        "invalidates" : 0,
+                        "docsExamined" : 94327,
+                        "alreadyHasObj" : 0,
+                        "inputStage" : {
+                                "stage" : "IXSCAN",
+                                "nReturned" : 94327,
+                                "executionTimeMillisEstimate" : 186,
+                                "works" : 94328,
+                                "advanced" : 94327,
+                                "needTime" : 0,
+                                "needYield" : 0,
+                                "saveState" : 749,
+                                "restoreState" : 749,
+                                "isEOF" : 1,
+                                "invalidates" : 0,
+                                "keyPattern" : {
+                                        "rating" : 1
+                                },
+                                "indexName" : "rating_1",
+                                "isMultiKey" : false,
+                                "multiKeyPaths" : {
+                                        "rating" : [ ]
+                                },
+                                "isUnique" : false,
+                                "isSparse" : false,
+                                "isPartial" : false,
+                                "indexVersion" : 2,
+                                "direction" : "forward",
+                                "indexBounds" : {
+                                        "rating" : [
+                                                "(6.14, 7.78)"
+                                        ]
+                                },
+                                "keysExamined" : 94327,
+                                "seeks" : 1,
+                                "dupsTested" : 0,
+                                "dupsDropped" : 0,
+                                "seenInvalidated" : 0
+                        }
+                }
+        },
+        "serverInfo" : {
+                "host" : "DESKTOP-GJB7PRT",
+                "port" : 27017,
+                "version" : "3.6.5-87-g91d0924489",
+                "gitVersion" : "91d09244898d046880fdf7b82741795b56233883"
+        },
+        "ok" : 1
+}
